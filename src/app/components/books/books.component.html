@@ -1,0 +1,30 @@
+<h5>Pages</h5>
+<button class="btn btn-outline-dark" *ngFor="let x of toRange(numPages);let page=index" (click)="setBooks(page)">{{page+1}}</button>
+
+<div class="container-fluid">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Cover</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let book of currBooks">
+            <td>
+                <img *ngIf="book.volumeInfo.hasOwnProperty('imageLinks'); else noImage" [src]="book.volumeInfo.imageLinks.thumbnail">
+                <ng-template #noImage>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" width="128">
+                </ng-template>
+            </td>
+            <td class="align-middle">{{book.volumeInfo.title}}</td>
+            <td class="align-middle">{{book.volumeInfo.authors}}</td>
+
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<h5>Pages</h5>
+<button class="btn btn-outline-dark" *ngFor="let x of toRange(numPages);let page=index" (click)="setBooks(page)">{{page+1}}</button>
