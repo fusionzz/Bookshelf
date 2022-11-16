@@ -12,12 +12,8 @@ export class BooksApiService {
   url:string = "https://www.googleapis.com/books/v1/";
   userId:string = "103203803461631039227";
 
-  getTestSearch(searchTerm:string):Observable<any> {
-    return this.http.get(this.url + "volumes?q=" + searchTerm);
-  }
-
   getHomeLibrary(startIndex:number):Observable<any>{
-    return this.http.get(this.url+"users/"+this.userId+"/bookshelves/1001/volumes?startIndex="+startIndex+"&q=dreamcatcher");
+    return this.http.get(this.url+"users/"+this.userId+"/bookshelves/1001/volumes?maxResults=10&startIndex="+startIndex);
   }
 
 }

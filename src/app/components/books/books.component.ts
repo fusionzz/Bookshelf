@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BooksApiService } from 'src/app/services/books-api.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-books',
@@ -11,46 +12,61 @@ export class BooksComponent implements OnInit {
   constructor(private bookService:BooksApiService) { }
 
   ngOnInit(): void {
-    this.getShelves(0);
+    this.getFirstPage();
+  }
+
+  ngAfterContentInit(): void{
+    this.getAllBooks();
   }
 
   itemsPerPage:number = 10;
   
   allBooks?:any[] = [];
-  numPages:number = 0;
+  numPages:number = 1;
 
   currBooks?:any[] = [];
   currPage:number = 0;
+
+  totalItems = 0;
 
   toRange(i:number){
     return new Array(i);
   }
 
-  getAllBooks(){
-    for(let i = 1; i < this.numPages;i++){
-      this.bookService.getHomeLibrary(i * this.itemsPerPage).subscribe(
-        response => {
-          this.allBooks?.push(...response.items);
-        }
-      )
-    }
-  }
-
-  getShelves(startIndex:number){
-    this.bookService.getHomeLibrary(startIndex).subscribe(
+  getFirstPage(){
+    this.bookService.getHomeLibrary(0).subscribe(
       response => {
         this.allBooks?.push(...response.items);
-        this.numPages = Math.floor(response.totalItems / this.itemsPerPage) + 1;
         this.setBooks(0);
-        this.getAllBooks();
-        console.log(response.items);
-        console.log(response);
       }
     )
   }
 
+  getBooks(index:number):any{
+    return lastValueFrom(this.bookService.getHomeLibrary(index));
+  }
+
+  async getAllBooks(){
+    let currBooks:any[] = [];
+    let i = 1;
+    let response;
+
+    do {
+      response = await this.getBooks(i*this.itemsPerPage);
+      currBooks = response.items;
+      this.allBooks?.push(...currBooks);
+      this.numPages++;
+      i++;         
+    } while (currBooks.length == this.itemsPerPage)
+
+
+  }
+
+
+  //for changing pages
   setBooks(page:number){
     this.currBooks = this.allBooks?.slice(page*this.itemsPerPage, page*this.itemsPerPage+this.itemsPerPage);
+    //console.log(this.allBooks)
   }
 
 }
