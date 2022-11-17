@@ -2,24 +2,40 @@
 <button class="btn btn-outline-dark" *ngFor="let x of toRange(numPages);let page=index" (click)="setBooks(page)">{{page+1}}</button>
 
 <div class="container-fluid">
-<table class="table table-striped">
+<table class="table table-striped align-middle table-hover table-bordered">
     <thead>
         <tr>
-            <th scope="col">Cover</th>
-            <th scope="col">Title</th>
-            <th scope="col">Author</th>
+            <th scope="col" class="col-md-1">Cover</th>
+            <th scope="col" class="col-md-3" (click)="titleSort()" style="cursor:pointer">
+                Title
+                <ng-container *ngIf="titleSorted && titleAsc">
+                    ↑
+                </ng-container>
+                <ng-container *ngIf="titleSorted && !titleAsc">
+                    ↓
+                </ng-container>
+            </th>
+            <th scope="col" (click)="authorSort()" style="cursor:pointer">
+                Author
+                <ng-container *ngIf="authorSorted && authorAsc">
+                    ↑
+                </ng-container>
+                <ng-container *ngIf="authorSorted && !authorAsc">
+                    ↓
+                </ng-container>
+            </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let book of currBooks">
             <td>
-                <img *ngIf="book.volumeInfo.hasOwnProperty('imageLinks'); else noImage" [src]="book.volumeInfo.imageLinks.thumbnail">
+                <img *ngIf="book.volumeInfo.hasOwnProperty('imageLinks'); else noImage" [src]="book.volumeInfo.imageLinks.thumbnail" width="128">
                 <ng-template #noImage>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" width="128">
                 </ng-template>
             </td>
-            <td class="align-middle">{{book.volumeInfo.title}}</td>
-            <td class="align-middle">{{book.volumeInfo.authors}}</td>
+            <td>{{book.volumeInfo.title}}</td>
+            <td>{{book.volumeInfo.authors}}</td>
 
         </tr>
     </tbody>
