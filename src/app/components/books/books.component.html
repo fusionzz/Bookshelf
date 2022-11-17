@@ -6,23 +6,30 @@
     <thead>
         <tr>
             <th scope="col" class="col-md-1">Cover</th>
-            <th scope="col" class="col-md-3" (click)="titleSort()" style="cursor:pointer">
-                Title
-                <ng-container *ngIf="titleSorted && titleAsc">
-                    ↑
-                </ng-container>
-                <ng-container *ngIf="titleSorted && !titleAsc">
-                    ↓
-                </ng-container>
+            <th scope="col" class="col-md-2">
+                <!--user select prevents highlighting when changing order-->
+                <span (click)="titleSort()" style="cursor:pointer; user-select: none;">
+                    Title
+                    <ng-container *ngIf="titleSorted && titleAsc">
+                        ↑
+                    </ng-container>
+                    <ng-container *ngIf="titleSorted && !titleAsc">
+                        ↓
+                    </ng-container>
+                </span>
+                <input type="text" [(ngModel)]="titleSearchText" placeholder="Search Title" (input)="titleSearch()">
             </th>
-            <th scope="col" (click)="authorSort()" style="cursor:pointer">
-                Author
-                <ng-container *ngIf="authorSorted && authorAsc">
-                    ↑
-                </ng-container>
-                <ng-container *ngIf="authorSorted && !authorAsc">
-                    ↓
-                </ng-container>
+            <th scope="col" class="col-md-2">
+                <span (click)="authorSort()" style="cursor:pointer; user-select: none;">
+                    Author
+                    <ng-container *ngIf="authorSorted && authorAsc">
+                        ↑
+                    </ng-container>
+                    <ng-container *ngIf="authorSorted && !authorAsc">
+                        ↓
+                    </ng-container>
+                </span>
+                <input type="text" [(ngModel)]="authorSearchText" placeholder="Search Author" (input)="authorSearch()">
             </th>
         </tr>
     </thead>

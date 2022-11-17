@@ -21,11 +21,17 @@ export class BooksComponent implements OnInit {
 
   itemsPerPage:number = 10;
   
-  allBooks?:any[] = [];
+  allBooks:any[] = [];
+  filteredBooks:any[] = [];
   numPages:number = 1;
+
+  originalPages = 0;
 
   currBooks?:any[] = [];
   currPage:number = 0;
+
+  titleSearchText = "";
+  authorSearchText = "";
 
   //creates empty array of size i
   toRange(i:number){
@@ -37,6 +43,7 @@ export class BooksComponent implements OnInit {
     this.bookService.getHomeLibrary(0).subscribe(
       response => {
         this.allBooks?.push(...response.items);
+        this.filteredBooks = [...this.allBooks];
         this.setBooks(0);
       }
     )
@@ -59,12 +66,14 @@ export class BooksComponent implements OnInit {
       this.numPages++;
       i++;         
     } while (currBooks.length == this.itemsPerPage)
+    this.filteredBooks = [...this.allBooks];
+    this.originalPages = this.numPages;
   }
 
 
   //for changing pages
   setBooks(page:number){
-    this.currBooks = this.allBooks?.slice(page*this.itemsPerPage, page*this.itemsPerPage+this.itemsPerPage);
+    this.currBooks = this.filteredBooks.slice(page*this.itemsPerPage, page*this.itemsPerPage+this.itemsPerPage);
   }
 
   //sort by title
@@ -91,7 +100,7 @@ export class BooksComponent implements OnInit {
         }
       }
     })
-    this.setBooks(0);
+    this.titleSearch();
   }
 
   //sort by author first name
@@ -118,7 +127,29 @@ export class BooksComponent implements OnInit {
         }
       }
     })
+    this.authorSearch();
+  }
+
+  //CANT SEARCH BY BOTH, SHOULD FIX
+
+  titleSearch(){
+    this.filteredBooks = [...this.allBooks.filter(book => book.volumeInfo.title.toLowerCase().includes(this.titleSearchText.toLowerCase()))];
     this.setBooks(0);
+    if (this.titleSearchText.length == 0){
+      this.numPages = this.originalPages;
+    }else{
+      this.numPages = Math.floor(this.filteredBooks.length / this.itemsPerPage) + (this.filteredBooks.length % this.itemsPerPage == 0 ? 0 : 1);
+    }
+  }
+
+  authorSearch(){
+    this.filteredBooks = [...this.allBooks.filter(book => book.volumeInfo.authors[0].toLowerCase().includes(this.authorSearchText.toLowerCase()))];
+    this.setBooks(0);
+    if (this.authorSearchText.length == 0){
+      this.numPages = this.originalPages;
+    }else{
+      this.numPages = Math.floor(this.filteredBooks.length / this.itemsPerPage) + (this.filteredBooks.length % this.itemsPerPage == 0 ? 0 : 1);
+    }
   }
 
 }
